@@ -1,0 +1,84 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+# --- Данные системы ---
+USER_ID="beluga"
+PASS_KEY="admin"
+VERSION="1.3.1-STABLE"
+KING="Beluga Edits"
+ADMIN="pirozhok_75"
+
+# --- Цвета ---
+B='\033[1;34m'; C='\033[1;36m'; G='\033[1;32m'; R='\033[1;31m'; W='\033[1;37m'; Y='\033[1;33m'; NC='\033[0m'
+
+get_weather() {
+    echo -e "${Y}[*] Получение данных о погоде...${NC}"
+    curl -s "wttr.in?0&lang=ru" || echo -e "${R}Ошибка: установите curl (pkg install curl)${NC}"
+}
+
+open_browser() {
+    echo -ne "${C}Введите URL (например, google.com): ${NC}"
+    read url
+    lynx "$url" || echo -e "${R}Ошибка: установите lynx (pkg install lynx)${NC}"
+}
+
+show_banner() {
+    clear
+    echo -e "${C}  ____  ______ _      _    _  _____  "
+    echo -e " |  _ \|  ____| |    | |  | |/ ____| "
+    echo -e " | |_) | |__  | |    | |  | | |  __  "
+    echo -e " |  _ <|  __| | |    | |  | | | |_ | / /\ \ "
+    echo -e " | |_) | |____| |____| |__| | |__| |/ ____ \ "
+    echo -e " |____/|______|______| \____/ \_____/_/    \_\ OS${NC}"
+    echo -e "${B} > v.$VERSION | OP: $USER_ID | NET: ONLINE${NC}"
+    echo -e "${Y} > КОРОЛЬ: $KING | АДМИН: $ADMIN${NC}"
+    echo -e "${W} --------------------------------------${NC}"
+}
+
+# --- Вход ---
+clear
+echo -ne "${W}Access Key for ${C}$USER_ID${W}: ${NC}"
+read -s input_pass
+if [[ "$input_pass" != "$PASS_KEY" ]]; then
+    echo -e "\n${R}ERR: ACCESS DENIED${NC}"
+    exit 1
+fi
+
+show_banner
+
+while true; do
+    echo -ne "${B}┌──${R}(${W}${USER_ID}@beluga${R})${B}-[${W}${PWD}${B}]\n└─${C}$ ${NC}"
+    read -r cmd args
+    case $cmd in
+        help)
+            echo -e "\n${Y}МОДУЛИ:${NC}"
+            echo -e " ${G}weather ${W}- Погода"
+            echo -e " ${G}web     ${W}- Браузер"
+            echo -e " ${G}set     ${W}- Настройки"
+            echo -e " ${G}info    ${W}- О создателях"
+            echo -e " ${G}hack/clear/exit${NC}\n"
+            ;;
+        weather) get_weather ;;
+        web) open_browser ;;
+        set)
+            echo -e "\n${Y}--- НАСТРОЙКИ ---${NC}"
+            echo "1. Сменить ID"
+            echo "2. Сменить Key"
+            read opt
+            if [ "$opt" == "1" ]; then echo -ne "Новый ID: "; read USER_ID; fi
+            if [ "$opt" == "2" ]; then echo -ne "Новый Key: "; read -sp PASS_KEY; fi
+            ;;
+        info) 
+            echo -e "\n${B}--- BELUGA OS TEAM ---${NC}"
+            echo -e "${W}Создатель (Король): ${Y}$KING${NC}"
+            echo -e "${W}Администратор:      ${Y}$ADMIN${NC}"
+            echo -e "${W}Версия системы:     ${C}$VERSION${NC}\n" 
+            ;;
+        hack)
+            echo -e "${R}Bruteforcing...${NC}"
+            sleep 1; echo -e "${G}Success! Access granted by $ADMIN.${NC}"
+            ;;
+        clear) show_banner ;;
+        exit) exit 0 ;;
+        *) eval "$cmd $args" ;;
+    esac
+done

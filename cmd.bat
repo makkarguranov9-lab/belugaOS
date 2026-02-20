@@ -1,0 +1,92 @@
+@echo off
+setlocal enabledelayedexpansion
+title Beluga OS v1.3.1 - Windows Edition
+color 0B
+
+:: --- Данные ---
+set "USER_ID=beluga"
+set "PASS_KEY=admin"
+set "VERSION=1.3.1-STABLE"
+set "KING=Beluga Edits"
+set "ADMIN=pirozhok_75"
+
+:login
+cls
+echo Access Key for %USER_ID%:
+set /p "input_pass="
+if not "!input_pass!"=="%PASS_KEY%" (
+    color 0C
+    echo ERR: ACCESS DENIED
+    pause
+    goto login
+)
+
+:main_menu
+cls
+color 0B
+echo   ____  ______ _      _    _  _____  
+echo  ^|  _ \^|  ____^| ^|    ^| ^|  ^| ^|/ ____^| 
+echo  ^| ^|_) ^| ^|__  ^| ^|    ^| ^|  ^| ^| ^|  __  
+echo  ^|  _ ^<^|  __^| ^| ^|    ^| ^|  ^| ^| ^| ^|_ ^| / /\ \ 
+echo  ^| ^|_) ^| ^|____^| ^|____^| ^|__^| ^| ^|__^| ^|/ ____ \ 
+echo  ^|____/^|______^|______^|\____/ \_____/_/    \_\ OS
+echo.
+echo  ^> v.%VERSION% ^| OP: %USER_ID% ^| NET: ONLINE
+echo  ^> КОРОЛЬ: %KING% ^| АДМИН: %ADMIN%
+echo  --------------------------------------
+echo.
+
+:shell
+set "cmd="
+set /p "cmd=%USER_ID%@beluga:~$ "
+
+if "!cmd!"=="help" (
+    echo.
+    echo МОДУЛИ:
+    echo  weather - Погода (нужен интернет)
+    echo  web     - Открыть браузер
+    echo  info    - О создателях
+    echo  hack    - Режим взлома
+    echo  clear   - Очистить экран
+    echo  exit    - Выход
+    echo.
+    goto shell
+)
+
+if "!cmd!"=="weather" (
+    echo [*] Получение данных о погоде...
+    curl wttr.in?0
+    echo.
+    goto shell
+)
+
+if "!cmd!"=="web" (
+    set /p "url=Введите URL (например, google.com): "
+    start https://!url!
+    goto shell
+)
+
+if "!cmd!"=="info" (
+    echo.
+    echo --- BELUGA OS TEAM ---
+    echo Создатель (Король): %KING%
+    echo Администратор:      %ADMIN%
+    echo Версия системы:     %VERSION%
+    echo.
+    goto shell
+)
+
+if "!cmd!"=="hack" (
+    echo Bruteforcing...
+    timeout /t 1 >nul
+    echo Success! Access granted by %ADMIN%.
+    goto shell
+)
+
+if "!cmd!"=="clear" goto main_menu
+if "!cmd!"=="exit" exit
+
+:: Если команда не из списка, пробуем выполнить как системную
+!cmd!
+echo.
+goto shell
