@@ -1,26 +1,31 @@
 @echo off
-:: Фикс кодировки (чтобы не было кракозябр)
+:: Исправляем кодировку, чтобы текст отображался правильно
 chcp 65001 >nul
 setlocal enabledelayedexpansion
-title Beluga OS v1.3.1 - Stable
+title Beluga OS v1.3.1 - Windows Edition
+color 0B
 
+:: --- Данные ---
 set "USER_ID=beluga"
 set "PASS_KEY=admin"
+set "VERSION=1.3.1-STABLE"
+set "KING=Beluga Edits"
+set "ADMIN=pirozhok_75"
 
 :login
 cls
-echo ========================================
-echo   ДОСТУП ЗАБЛОКИРОВАН. ВВЕДИТЕ КЛЮЧ.
-echo ========================================
-set /p "input_pass=Key: "
+echo Access Key for %USER_ID%:
+set /p "input_pass="
 if not "!input_pass!"=="%PASS_KEY%" (
-    echo [!] ОШИБКА: НЕВЕРНЫЙ КЛЮЧ.
-    timeout /t 2 >nul
+    color 0C
+    echo ERR: ACCESS DENIED
+    pause
     goto login
 )
 
 :main_menu
 cls
+color 0B
 echo   ____  ______ _      _    _  _____  
 echo  ^|  _ \^|  ____^| ^|    ^| ^|  ^| ^|/ ____^| 
 echo  ^| ^|_) ^| ^|__  ^| ^|    ^| ^|  ^| ^| ^|  __  
@@ -28,21 +33,53 @@ echo  ^|  _ ^<^|  __^| ^| ^|    ^| ^|  ^| ^| ^| ^|_ ^| / /\\ \\
 echo  ^| ^|_) ^| ^|____^| ^|____^| ^|__^| ^| ^|__^| ^|/ ____ \\ 
 echo  ^|____/^|______^|______^|\____/ \\_____/_/    \\_\\ OS
 echo.
-echo  ^> v.1.3.1 ^| OP: %USER_ID% ^| NET: ONLINE
-echo  ------------------------------------------
+echo  ^> v.%VERSION% ^| OP: %USER_ID% ^| NET: ONLINE
+echo  ^> КОРОЛЬ: %KING% ^| АДМИН: %ADMIN%
+echo  --------------------------------------
+echo.
 
 :shell
-:: Метка shell и goto в конце не дадут программе вылететь
-set "user_cmd="
-set /p "user_cmd=%USER_ID%@beluga:~$ "
+set "cmd="
+set /p "cmd=%USER_ID%@beluga:~$ "
 
-if "!user_cmd!"=="exit" exit
-if "!user_cmd!"=="clear" goto main_menu
-if "!user_cmd!"=="" goto shell
+if "!cmd!"=="help" (
+    echo.
+    echo МОДУЛИ:
+    echo  weather - Погода
+    echo  web     - Браузер
+    echo  info    - О создателях
+    echo  hack    - Взлом
+    echo  clear   - Очистить
+    echo  exit    - Выход
+    goto shell
+)
 
-:: Выполнение команды
-!user_cmd!
+if "!cmd!"=="weather" (
+    curl wttr.in?0
+    goto shell
+)
 
-echo.
-:: Возвращаемся к вводу, чтобы окно не закрылось
+if "!cmd!"=="web" (
+    set /p "url=URL: "
+    start https://!url!
+    goto shell
+)
+
+if "!cmd!"=="info" (
+    echo Created by %KING% and %ADMIN%
+    goto shell
+)
+
+if "!cmd!"=="hack" (
+    echo Bruteforcing...
+    timeout /t 1 >nul
+    echo Success!
+    goto shell
+)
+
+if "!cmd!"=="clear" goto main_menu
+if "!cmd!"=="exit" exit
+
+:: Чтобы не вылетало при вводе любой другой команды
+!cmd!
 goto shell
