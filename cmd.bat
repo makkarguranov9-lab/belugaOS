@@ -1,11 +1,9 @@
 @echo off
-:: Исправляем кодировку, чтобы текст отображался правильно
-chcp 65001 >nul
 setlocal enabledelayedexpansion
 title Beluga OS v1.3.1 - Windows Edition
 color 0B
 
-:: --- Данные ---
+:: --- Данные системы ---
 set "USER_ID=beluga"
 set "PASS_KEY=admin"
 set "VERSION=1.3.1-STABLE"
@@ -47,10 +45,11 @@ if "!cmd!"=="help" (
     echo МОДУЛИ:
     echo  weather - Погода
     echo  web     - Браузер
-    echo  info    - О создателях
-    echo  hack    - Взлом
-    echo  clear   - Очистить
-    echo  exit    - Выход
+    echo  info    - О проекте
+    echo  hack    - Режим взлома
+    echo  clear   - Очистить экран
+    echo  exit    - Выход из системы
+    echo.
     goto shell
 )
 
@@ -60,12 +59,13 @@ if "!cmd!"=="weather" (
 )
 
 if "!cmd!"=="web" (
-    set /p "url=URL: "
+    set /p "url=Введите URL: "
     start https://!url!
     goto shell
 )
 
 if "!cmd!"=="info" (
+    echo Beluga OS v1.3.1
     echo Created by %KING% and %ADMIN%
     goto shell
 )
@@ -73,13 +73,14 @@ if "!cmd!"=="info" (
 if "!cmd!"=="hack" (
     echo Bruteforcing...
     timeout /t 1 >nul
-    echo Success!
+    echo Success! Access granted.
     goto shell
 )
 
 if "!cmd!"=="clear" goto main_menu
 if "!cmd!"=="exit" exit
 
-:: Чтобы не вылетало при вводе любой другой команды
+:: Запуск системных команд
 !cmd!
+echo.
 goto shell
